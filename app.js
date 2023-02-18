@@ -41,7 +41,20 @@ app.get("/bird", (req, res) => {
 // Post a bird
 
 app.post("/birds", (req, res) => {
-  const newBird = req.body;
+  let lastBirdElemntID;
+
+  if (birds.length === 0) {
+    lastBirdElemntID = 0;
+  } else {
+    lastBirdElemntID = birds[birds.length - 1].id;
+  }
+
+  const newBird = {
+    id: lastBirdElemntID + 1,
+    birdName: req.body.birdName,
+    sound: req.body.sound,
+  };
+
   birds.push(newBird);
   res.send(birds);
 });
@@ -68,7 +81,8 @@ app.delete("/birds/:id", (req, res) => {
   if (!foundBird) {
     res.status(400).send("No bird found");
   } else {
-    birds.pop((bird) => bird.id === foundBird.id);
+    const indexNumber = birds.indexOf(foundBird);
+    birds.splice(indexNumber, 1);
     res.send(birds);
   }
 });
